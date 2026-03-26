@@ -8,6 +8,7 @@ import { APP_SETTINGS } from './app.settings';
   providedIn: 'root'
 })
 export class ProductsService {
+  
   private products: Product[] = [];
   private productsUrl = inject(APP_SETTINGS).apiUrl + '/products';
   
