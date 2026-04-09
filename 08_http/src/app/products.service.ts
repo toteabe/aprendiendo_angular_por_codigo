@@ -10,18 +10,32 @@ import { APP_SETTINGS } from './app.settings';
 export class ProductsService {
   
   private products: Product[] = [];
+
+  // inject(APP_SETTINGS).apiUrl == BASE_URL
   private productsUrl = inject(APP_SETTINGS).apiUrl + '/products';
   
+  //inyección por constructor de httpClient, éste está disponible en el contexto de angular
+  //cliente más potente que el fetch básico de JS standard que basa en Promise
+  //angular utiliza este httpClient que basa en los Observables de RxJS más potentes 
+  //que Promises 
+  //private http: HttpClient = inject(HttpClient);
   constructor(private http: HttpClient) { }
 
   getProducts(): Observable<Product[]> {
-    const options = new HttpParams().set('limit', 10);
+    //HttpParams es un parámetro de URL (query param, lo que va detrás de ?)
+    // http://localhost:3000/products?limit=10
+    const params = new HttpParams().set('limit', 10);
+    
+    //httpClient - cliente de api sobre http para comunicar con la API o Backend
+    //Envía una petición de verbo GET a la url de productsURL
     return this.http.get<Product[]>(this.productsUrl, {
-      params: options
-    }).pipe(map(products => {
-      this.products = products;
-      return products;
-    }));
+      params: params
+    }).pipe(
+        map(products => {
+          this.products = products;
+          return products;
+        })
+    );
   }
 
   getProduct(id: number): Observable<Product> {

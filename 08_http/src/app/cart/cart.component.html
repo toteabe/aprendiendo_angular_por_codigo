@@ -1,0 +1,71 @@
+<label>User id:</label>
+<input [(ngModel)]="userId"
+    #userIdModel="ngModel"
+    appIsId
+    required
+/>
+@if (  userIdModel.invalid && userIdModel.touched) {
+
+    @if ( userIdModel.errors?.['required'] ) {
+        <div>
+          <small>Elemento requerido.</small>
+        </div>
+    } @else if ( userIdModel.errors?.['onlyPositiveIntegerNumbers'] ) {
+        <div>
+          <small>Solo se permiten números positivos sin letras ni símbolos.</small>
+        </div>
+    }
+}
+
+<button (click)="onCreate()" [disabled]="userIdModel.invalid">Create new Cart</button>
+
+<div class="pill-group borde">
+
+    @if (loading && !this.selectedCart) {
+      <div class="pill">
+            <span style="font-weight: bolder;">Loading...</span>
+      </div>
+    }
+
+
+    @if (this.selectedCart) {
+
+        <div class="pill">
+
+            <span style="font-weight: bolder;">Cart {{selectedCart.id}}</span>
+
+        </div>
+        <div class="pill">
+            <small>Creation date {{selectedCart.date | date: 'yyyy-MM-dd' }}, num. products: {{selectedCart.products.length}}</small>
+        </div>
+
+        @for ( product of selectedCart.products; track product.productId) {
+
+            <div class="pill">
+            🏷️ Product id: {{product.productId}}, descr: {{product.descr}}, quantity: {{product.quantity}}
+            </div>
+
+        }
+
+        <button (click)="selectedCart=undefined">Volver</button>
+
+    } @else {
+
+        @for ( cart of carts; track cart.id) {
+
+            <div class="pill enlace" (click)="onSelectCart(cart.id!)">
+              <button>
+            🛒 <span class="resalte">Cart {{ cart.id }}</span>  num. products: {{cart.products.length}}.
+            </button>
+            </div>
+
+        } @empty {
+
+            <div>
+                No hay carts disponibles.
+            </div>
+
+        }
+
+    }
+</div>
